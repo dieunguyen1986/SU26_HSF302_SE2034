@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.List;
 
 class JobDaoImplTest {
     private static JobDao jobDao;
@@ -67,5 +68,13 @@ class JobDaoImplTest {
 
     @Test
     void findAllJobs() {
+
+        List<Job> jobs = jobDao.findAllJobs();
+
+        jobs.forEach(job -> {
+            System.out.println(job.getTitle() + "\t" + job.getDepartment().getDepartmentName());
+        });
+
+        Assertions.assertEquals(1, jobs.size());
     }
 }
