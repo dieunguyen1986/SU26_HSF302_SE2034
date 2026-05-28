@@ -7,10 +7,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Set;
 
+@Repository
 public class DepartmentDaoImpl implements DepartmentDao {
     private EntityManager entityManager;
 
