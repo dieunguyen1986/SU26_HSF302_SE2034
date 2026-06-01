@@ -10,8 +10,16 @@ import java.util.Set;
 @Table(name = "departments")
 @NoArgsConstructor@AllArgsConstructor
 @Setter@Getter
-@ToString
+@ToString(exclude = {"users", "jobs"})
 @Builder
+@org.hibernate.annotations.NamedQueries({@org.hibernate.annotations.NamedQuery(name = "findDepartmentByName",
+    query = "SELECT d FROM Department d JOIN FETCH d.jobs j WHERE d.departmentName LIKE :name")
+        ,@org.hibernate.annotations.NamedQuery(name = "findAll", query = "SELECT d FROM Department d")
+
+//        List<Object[]> --> List<JobDto>
+//        @org.hibernate.annotations.NamedQuery(name = "findDepartmentByName",
+//                query = "SELECT d FROM Department d JOIN d.jobs j WHERE d.departmentName LIKE :name")
+})
 public class Department extends  BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +32,10 @@ public class Department extends  BaseEntity {
 
     // List of Job
     // Map vs List vs Set --> cho nợ
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department", fetch =  FetchType.LAZY)
     private Set<Job> jobs = new HashSet<>();
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department", fetch =   FetchType.LAZY)
     private Set<User> users = new HashSet<>();
 
 }
