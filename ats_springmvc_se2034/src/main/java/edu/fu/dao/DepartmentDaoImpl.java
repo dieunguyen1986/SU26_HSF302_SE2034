@@ -6,20 +6,19 @@ import edu.fu.dao.DepartmentDao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public class DepartmentDaoImpl implements DepartmentDao {
-    private EntityManager entityManager;
 
-    public DepartmentDaoImpl() {
-
-        entityManager = DbContext.getEntityManager();
-    }
-
+    @Autowired
+    private SessionFactory sessionFactory;
+    
     @Override
     public Department findById(long id) {
         // Connection
