@@ -1,88 +1,66 @@
 package edu.fu.dao;
 
 import edu.fu.entities.Job;
-import edu.fu.utils.DbContext;
-import edu.fu.dao.JobDao;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class JobDaoImpl implements JobDao {
-    private EntityManager entityManager;
-
-    public JobDaoImpl() {
-        entityManager = DbContext.getEntityManager();
-    }
+    private final SessionFactory sessionFactory;
 
     @Override
     public Job findById(Long id) {
-        Session session = null;
-        try {
-            entityManager = DbContext.getEntityManager();
-            session = entityManager.unwrap(Session.class);
-
+        try (Session session = sessionFactory.openSession()) {
             return session.find(Job.class, id);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            // checked - compile time
-            //throw new Exception("Has a error occurred" + e.getMessage());
-
-            // Unchecked Exception - runtime
-            throw new RuntimeException("Has a error occurred\" + e.getMessage()");
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
-
     }
 
     @Override
     public Job createJob(Job job) {
-        entityManager = DbContext.getEntityManager();
-        EntityTransaction tx = null;
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = null;
+            try {
+                tx = session.beginTransaction();
 
-        try {
-            tx = entityManager.getTransaction();
-            tx.begin();
+                session.persist(job);
 
-            entityManager.persist(job);
-
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) {
-                tx.rollback();
+                tx.commit();
+            } catch (Exception e) {
+                if (tx != null) {
+                    tx.rollback();
+                }
+                throw new RuntimeException(e);
             }
-            throw new RuntimeException(e);
         }
         return job;
     }
 
     @Override
     public List<Job> findAllJobs() {
+        try (Session session = sessionFactory.openSession()) {
+            TypedQuery<Job> typedQuery = session.createQuery(
+                    "SELECT j FROM Job j", Job.class);
 
-        TypedQuery typedQuery = entityManager.createQuery(
-                "SELECT j FROM Job j", Job.class);
-
-        return typedQuery.getResultList();
+            return typedQuery.getResultList();
+        }
     }
 
     @Override
     public boolean isExisted(String title) {
         // Try with resources
-        try (Session session = entityManager.unwrap(Session.class);) {
-           Long result = session.createQuery("SELECT COUNT(j) FROM Job j WHERE j.title = :title", Long.class)
+        try (Session session = sessionFactory.openSession()) {
+            Long result = session.createQuery("SELECT COUNT(j) FROM Job j WHERE j.title = :title", Long.class)
                     .setParameter("title", title)
                     .getSingleResult();
 
-           return  (result > 0);
+            return (result > 0);
         }
     }
 }

@@ -16,7 +16,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "edu.fu.controller")
+@ComponentScan(basePackages = "edu.fu")
 public class WebConfig implements ApplicationContextAware {
     private ApplicationContext applicationContext;
 

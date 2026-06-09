@@ -1,18 +1,21 @@
 package edu.fu.controller;
 
+import edu.fu.dto.UserRequest;
+import edu.fu.entities.User;
+import edu.fu.services.AuthService;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller // --> Spring Bean
 @RequestMapping(path = {"/auths", ""})
+@RequiredArgsConstructor
 public class AuthController {
+    private final AuthService authService;
 
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
@@ -24,16 +27,23 @@ public class AuthController {
     @PostMapping("/login")
     public String processLogin(@RequestParam(name = "email") String emailAddress,
                                @RequestParam(name = "password") String password,
-                               Model model
-                               ){
-        log.info("Email address {} ",emailAddress);
+                               Model model,
+                               HttpSession session
+    ) {
+        log.info("Email address {} ", emailAddress);
         // Call service?
 
-        if(!"rec@example.com".equals(emailAddress)){
-            model.addAttribute("error","Email address is not correct");
-            return "auth/login";
-        }
+        User user = authService.authenticate(UserRequest.builder().email(emailAddress).password(password).build());
+        session.setAttribute("user", user);
 
         return "jobs/job_management";
+    }
+
+
+    @PostMapping("/register")
+    public String register(@ModelAttribute UserRequest userRequest) { // ??
+        System.out.println(userRequest);
+
+        return "auth/login";
     }
 }

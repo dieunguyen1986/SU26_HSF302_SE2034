@@ -1,99 +1,66 @@
 package edu.fu.dao;
 
 import edu.fu.entities.Department;
-import edu.fu.utils.DbContext;
-import edu.fu.dao.DepartmentDao;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class DepartmentDaoImpl implements DepartmentDao {
 
-    @Autowired
-    private SessionFactory sessionFactory;
-    
+    private final SessionFactory sessionFactory;
+
+//    @Autowired
+//    public void setSessionFactory(SessionFactory sessionFactory) {
+//        this.sessionFactory = sessionFactory;
+//
+//    }
+
     @Override
     public Department findById(long id) {
         // Connection
-        Session session = null;
-        try {
-            // Create new session
-            session = entityManager.unwrap(Session.class);
-
-            // Query: null or not null
-            // SELECT d FROM Department d WHERE d.id = :id
-
-            Department department = session.get(Department.class, id);
-
-//            // Proxy object - design pattern
-//            Set<Job> actualJobs = department.getJobs(); // dept_id = 1L
-//
-//            // query
-//            System.out.println(department.getDepartmentName() + "\t" + department.getJobs().size());
-
-            return department;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex.getMessage());
-        } finally {
-            if (session != null) {
-                session.close();  // NullPointerException
-            }
-        }
+        Session session = sessionFactory.openSession();
+        Department department = session.get(Department.class, id);
+        return department;
     }
 
     @Override
     public List<Department> findByName(String name) {
         // Connection
-        Session session = null;
-        entityManager = DbContext.getEntityManager();
-        try {
-            // Create new session
-            session = entityManager.unwrap(Session.class);
+        Session session = sessionFactory.openSession();
 
-            Query<Department> query = session.createNamedQuery("findDepartmentByName", Department.class);
-            query.setParameter("name", name);
+        Query<Department> query = session.createNamedQuery("findDepartmentByName", Department.class);
+        query.setParameter("name", name);
 
-            return query.getResultList();
-        } catch (Exception ex) {
-            throw new RuntimeException(ex.getMessage());
-        } finally {
-            if (session != null) {
-                session.close();  // NullPointerException
-            }
-        }
+        return query.getResultList();
+
+
     }
 
     @Override
+    @Transactional
     public Department create(Department department) {
-        EntityTransaction transaction = null;
 
-        try {
-            transaction = entityManager.getTransaction();
-            transaction.begin();
+        Session session = sessionFactory.openSession();
 
-            entityManager.persist(department);
+        session.persist(department);
 
-            transaction.commit();
-
-            return department;
-
-        } catch (Exception e) {
-            transaction.rollback();
-            throw new RuntimeException(e);
-        }
+        return department;
 
     }
 
     @Override
     public Department update(Department department) {
-        return null;
+        Session session = sessionFactory.openSession();
+        session.merge(department);
+        return department;
     }
 
     @Override
