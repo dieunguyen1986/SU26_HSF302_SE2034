@@ -5,7 +5,6 @@ import edu.fu.dto.JobRequest;
 import edu.fu.entities.Department;
 import edu.fu.entities.Job;
 import edu.fu.entities.JobStatus;
-import edu.fu.services.JobService;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -57,7 +56,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public List<Job> findAllJobs() {
-        return List.of();
+        return jobDao.findAllJobs();
     }
 
 

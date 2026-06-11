@@ -36,7 +36,7 @@ public class AuthController {
         User user = authService.authenticate(UserRequest.builder().email(emailAddress).password(password).build());
         session.setAttribute("user", user);
 
-        return "jobs/job_management";
+        return "redirect:/jobs";
     }
 
 

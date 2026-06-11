@@ -44,12 +44,12 @@ public class JobDaoImpl implements JobDao {
 
     @Override
     public List<Job> findAllJobs() {
-        try (Session session = sessionFactory.openSession()) {
-            TypedQuery<Job> typedQuery = session.createQuery(
-                    "SELECT j FROM Job j", Job.class);
+        Session session = sessionFactory.openSession();
+        TypedQuery<Job> typedQuery = session.createQuery(
+                "SELECT j FROM Job j", Job.class);
 
-            return typedQuery.getResultList();
-        }
+        return typedQuery.getResultList();
+
     }
 
     @Override
