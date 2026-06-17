@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "jobs", uniqueConstraints = {@UniqueConstraint(name = "UXI_TITLE", columnNames = {"title"})})
@@ -51,4 +53,7 @@ public class Job extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
+
+    @OneToMany(mappedBy = "job", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private Set<JobSkill> jobSkills = new HashSet<>();
 }

@@ -44,7 +44,10 @@
     <div class="row d-flex justify-content-center mt-3">
 
         <div class="col-md-11">
-            <h2>Job Management</h2>
+            <div class="d-flex justify-content-between">
+                <h2>Job Management</h2>
+                <a type="button" class="btn btn-primary" data-bs-toggle="modal" th:href="@{/jobs/detail}">Create job</a>
+            </div>
             <hr>
             <form class="d-flex">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="keyword">

@@ -2,7 +2,8 @@ package edu.fu.dto;
 
 import lombok.*;
 
-import java.time.Instant;
+import java.time.LocalDate;
+import java.util.List;
 
 @Setter
 @Getter
@@ -20,7 +21,10 @@ public class JobRequest {
     private String utmSource;
     private String utmMedium;
 
-    private Instant deadline;
+    private LocalDate deadline;
 
     private Long departmentId;
+
+    // Danh sách id skill được chọn trên form
+    private List<Long> skillIds;
 }
