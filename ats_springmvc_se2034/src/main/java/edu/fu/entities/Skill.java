@@ -7,10 +7,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "skills")
-@NamedQueries({@NamedQuery(name = "findByName",
+// Tên named query phải duy nhất toàn app nên prefix bằng tên entity để khỏi đụng với entity khác
+@NamedQueries({@NamedQuery(name = "Skill.findByName",
         query = "SELECT s FROM Skill s WHERE s.skillName LIKE :keyword", resultClass = Skill.class)
-        , @NamedQuery(name = "findAll", query = "SELECT s FROM Skill s", resultClass = Skill.class)
-        , @NamedQuery(name = "findById", query = "SELECT s FROM Skill s WHERE s.id = :id", resultClass = Skill.class)
+        , @NamedQuery(name = "Skill.findAll", query = "SELECT s FROM Skill s", resultClass = Skill.class)
+        , @NamedQuery(name = "Skill.findById", query = "SELECT s FROM Skill s WHERE s.id = :id", resultClass = Skill.class)
 })
 @Setter
 @Getter
