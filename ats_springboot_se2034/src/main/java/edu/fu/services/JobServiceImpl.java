@@ -4,6 +4,10 @@ import edu.fu.dto.JobRequest;
 import edu.fu.entities.*;
 import edu.fu.repositities.JobRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +51,14 @@ public class JobServiceImpl implements JobService {
         }
 
         return jobRepository.save(fromDto(job));
+    }
+
+    public Page<Job> findPublishedJob(Integer pageIndex, Integer pageSize) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "publishAt");
+        Pageable pageable = PageRequest.of(pageIndex, pageSize, sort);
+
+//        jobRepository.findAll(specification, pageable);
+        return jobRepository.findPublishedJobByPage(pageable);
     }
 
 

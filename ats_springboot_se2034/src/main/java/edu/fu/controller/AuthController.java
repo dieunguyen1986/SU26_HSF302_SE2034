@@ -12,7 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller // --> Spring Bean
-@RequestMapping(path = {"/auths", ""})
+@RequestMapping(path = {"/auths"})
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;

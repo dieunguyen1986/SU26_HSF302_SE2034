@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{views/layout/public_layout.html}">
 <title>Job Board</title>
 <body>
 
-
 <!-- ===== Browse Job ===== -->
-<main class="container-fluid px-lg-5 py-5">
+<main layout:fragment="content" class="container-fluid px-lg-5 py-5">
     <div class="row g-4">
 
         <!-- ---------- Filter sidebar ---------- -->
@@ -84,6 +84,17 @@
 
             <!-- cards -->
             <div class="d-grid gap-3">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        <li th:each="i: ${#numbers.sequence(1, totalPage)} " class="page-item"><a class="page-link" href="#" th:text="${i}"></a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
 
                 <!-- one card per job -->
                 <article th:each="job : ${jobs}"
@@ -114,6 +125,9 @@
                         <small class="jb-meta fst-italic">
                             Date line: <span
                                 th:text="${job.deadline != null} ? ${#temporals.format(job.deadline, 'dd MMM yyyy')} : '31 Jan 2020'">31 Jan 2020</span>
+                            <span
+                                    th:text="${job.deadline != null} ?  ${#dates.format(job.deadline, 'dd/MM/yyyy')} : '31 Jan 2020'">31 Jan 2020</span>
+
                         </small>
                     </div>
                 </article>
@@ -123,7 +137,10 @@
                         <li class="page-item disabled">
                             <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
                         </li>
-                        <li th:each="i: ${#numbers.sequence(1, totalPage)}" class="page-item"><a class="page-link" href="#" th:text="${i}"></a></li>
+                        <li th:each="i: ${#numbers.sequence(1, totalPage)}" class="page-item"><a class="page-link"
+                                                                                                 href="#"
+                                                                                                 th:text="${i}"></a>
+                        </li>
                         <li class="page-item">
                             <a class="page-link" href="#">Next</a>
                         </li>
